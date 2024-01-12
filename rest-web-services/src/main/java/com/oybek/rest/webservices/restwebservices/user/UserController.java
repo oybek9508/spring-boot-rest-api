@@ -13,6 +13,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.oybek.rest.webservices.restwebservices.exception.UserNotFoundException;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class UserController {
 	
@@ -35,7 +37,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/users")
-	public ResponseEntity<User> insetUser(@RequestBody User user){
+	public ResponseEntity<User> insetUser(@Valid @RequestBody User user){
 		User matchingUser = userService.save(user);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(matchingUser.getId()).toUri();
 		return ResponseEntity.created(location).build();
