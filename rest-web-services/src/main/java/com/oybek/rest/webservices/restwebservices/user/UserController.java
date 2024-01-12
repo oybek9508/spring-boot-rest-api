@@ -2,6 +2,7 @@ package com.oybek.rest.webservices.restwebservices.user;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +31,15 @@ public class UserController {
 	}
 	
 	@GetMapping("/users/{id}")
-	public User findUserById(@PathVariable int id) {
+	public EntityModel<User> findUserById(@PathVariable int id) {
 		User matchingUser =  userService.findById(id);
-		if(matchingUser == null) {}
+		if(matchingUser == null) {
+			
 		throw new UserNotFoundException("id: " + id);
+		}
+		EntityModel<User> entityModel = EntityModel.of(matchingUser);
+
+		return entityModel;
 	}
 	
 	@PostMapping("/users")
