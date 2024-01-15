@@ -10,5 +10,4 @@ public class RestWebServicesApplication {
 		SpringApplication.run(RestWebServicesApplication.class, args);
 		System.out.println("started");
 	}
-
 }
