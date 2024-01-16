@@ -1,6 +1,8 @@
 package com.oybek.rest.webservices.restwebservices.user;
 
 import com.oybek.rest.webservices.restwebservices.exception.UserNotFoundException;
+import com.oybek.rest.webservices.restwebservices.jpa.PostRepository;
+import com.oybek.rest.webservices.restwebservices.jpa.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +16,11 @@ import java.util.Optional;
 @RestController
 public class UserJpaController {
 	private UserRepository userRepository;
+	private PostRepository postRepository;
 
-	public UserJpaController(UserRepository userRepository) {
+	public UserJpaController(UserRepository userRepository, PostRepository postRepository) {
 		this.userRepository = userRepository;
+		this.postRepository = postRepository;
 	}
 	
 	@GetMapping("/jpa/users")
@@ -55,5 +59,16 @@ public class UserJpaController {
 		return user.get().getPosts();
 
 	}
-
+	@PostMapping("/jpa/users/{id}/posts")
+public ResponseEntity<Posts> createPost(@PathVariable int id, @Valid @RequestBody Posts post){
+		Optional<User> user = userRepository.findById(id);
+		if(user.isEmpty()){
+			throw new UserNotFoundException("id: " + id);
+		}
+		post.setUser(user.get());
+		postRepository.save(post);
+		Posts newPost = postRepository.save(post);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newPost.getId()).toUri();
+return ResponseEntity.created(location).build();
+	}
 }

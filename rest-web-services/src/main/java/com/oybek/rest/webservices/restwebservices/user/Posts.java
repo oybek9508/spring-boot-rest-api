@@ -2,17 +2,20 @@ package com.oybek.rest.webservices.restwebservices.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Posts {
     @Id
     @GeneratedValue
-    private  Integer id;
+    private Integer id;
 
+    @Size(min=5, message = "The description length must be at least 5 characters")
     private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-private User user;
+    private User user;
     protected Posts(){}
     public Posts(Integer id, String description) {
         this.id = id;
@@ -33,6 +36,14 @@ private User user;
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
